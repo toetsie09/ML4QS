@@ -43,8 +43,26 @@ for milliseconds_per_instance in GRANULARITIES:
     #
     # We add the accelerometer data (continuous numerical measurements) of the phone and the smartwatch
     # and aggregate the values per timestep by averaging the values
-    dataset.add_numerical_dataset('Accelerometer.csv', 'Timestamp', ['X','Y', 'Z'], 'avg')
+    dataset.add_numerical_dataset('On_Table_0/Accelerometer.csv', 'Timestamp', ['X','Y', 'Z'], 'avg', 'acc_phone_')
 
     dataset = dataset.data_table
 
+    # Plot the data
+    DataViz = VisualizeDataset(__file__)
+
+    print(dataset.columns)
+
+    # Boxplot
+    DataViz.plot_dataset_boxplot(dataset, ['acc_phone_X','acc_phone_Y','acc_phone_Z'])
+
+    # Plot all data
+    DataViz.plot_dataset(dataset, ['acc_'],
+                                  ['like'],
+                                  ['line'])
+
+    # And print a summary of the dataset.
+    util.print_statistics(dataset)
+    datasets.append(copy.deepcopy(dataset))
+
     dataset.to_csv(RESULT_PATH / f'chapter2_result_{milliseconds_per_instance}')
+

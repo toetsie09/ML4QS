@@ -43,7 +43,12 @@ for milliseconds_per_instance in GRANULARITIES:
     #
     # We add the accelerometer data (continuous numerical measurements) of the phone and the smartwatch
     # and aggregate the values per timestep by averaging the values
-    dataset.add_numerical_dataset('On_Table_0/Accelerometer.csv', 'Timestamp', ['X','Y', 'Z'], 'avg', 'acc_phone_')
+    dataset.add_numerical_dataset('FinalFiles/Accelerometer.csv', 'Timestamp', ['X','Y', 'Z'], 'avg', 'acc_phone_')
+    dataset.add_numerical_dataset('FinalFiles/Gyroscope.csv', 'Timestamp', ['X', 'Y', 'Z'], 'avg', 'gyr_phone_')
+    dataset.add_numerical_dataset('FinalFiles/Light.csv', 'Timestamp', ['Illuminance'], 'avg', 'light_phone_')
+    dataset.add_numerical_dataset('FinalFiles/Pressure.csv', 'Timestamp', ['Millibars'], 'avg', 'press_phone_')
+
+    dataset.add_event_dataset('FinalFiles/labels.csv', 'label_start_datetime', 'label_end_datetime', 'label', 'binary')
 
     dataset = dataset.data_table
 
@@ -55,10 +60,12 @@ for milliseconds_per_instance in GRANULARITIES:
     # Boxplot
     DataViz.plot_dataset_boxplot(dataset, ['acc_phone_X','acc_phone_Y','acc_phone_Z'])
 
+    print(dataset)
+
     # Plot all data
-    DataViz.plot_dataset(dataset, ['acc_'],
-                                  ['like'],
-                                  ['line'])
+    DataViz.plot_dataset(dataset, ['acc_', 'gyr_', 'light_phone_', 'press_phone_', 'label'],
+                                  ['like', 'like', 'like', 'like', 'like'],
+                                  ['line', 'line', 'line', 'line', 'points'])
 
     # And print a summary of the dataset.
     util.print_statistics(dataset)

@@ -1,4 +1,4 @@
-from util.util import get_chapter
+from Python3Code.util.util import get_chapter
 
 import matplotlib.colors as cl
 import matplotlib.pyplot as plt

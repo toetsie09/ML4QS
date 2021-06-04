@@ -89,7 +89,7 @@ data = pandas.read_csv("../Python3Code/intermediate_datafiles/chapter2_result.cs
 light_phone_col = "light_phone_lux"
 acc_phone_col = "acc_phone_x"
 
-compute_chauvenet(dataset=data, columns=[light_phone_col, acc_phone_col], values=[])
+compute_chauvenet(dataset=data, columns=[light_phone_col, acc_phone_col], values=[2,10])
 compute_mixture(dataset=data, columns=[light_phone_col, acc_phone_col], values=[])
 compute_euclidean_distance(dataset=data, columns=[light_phone_col, acc_phone_col], values=[])
 compute_local_outlier(dataset=data, columns=[light_phone_col, acc_phone_col], values=[])

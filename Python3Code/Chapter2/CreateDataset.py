@@ -29,6 +29,7 @@ class CreateDataset:
     # Create an initial data table with entries from start till end time, with steps
     # of size granularity. Granularity is specified in milliseconds
     def create_timestamps(self, start_time, end_time):
+        # print(pd.date_range(start_time, end_time, freq=str(self.granularity)+'ms'))
         return pd.date_range(start_time, end_time, freq=str(self.granularity)+'ms')
 
     def create_dataset(self, start_time, end_time, cols, prefix):
@@ -49,6 +50,9 @@ class CreateDataset:
 
         # Create a table based on the times found in the dataset
         if self.data_table is None:
+            # print('min', min(dataset[timestamp_col]))
+            # print('max', max(dataset[timestamp_col]))
+
             self.create_dataset(min(dataset[timestamp_col]), max(dataset[timestamp_col]), value_cols, prefix)
         else:
             for col in value_cols:

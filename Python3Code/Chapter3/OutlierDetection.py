@@ -12,7 +12,7 @@ import math
 from sklearn.mixture import GaussianMixture
 import numpy as np
 import pandas as pd
-import util.util as util
+import Python3Code.util.util as util
 import copy
 
 # Class for outlier detection algorithms based on some distribution of the data. They

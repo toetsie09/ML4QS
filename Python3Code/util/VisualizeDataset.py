@@ -74,15 +74,12 @@ class VisualizeDataset:
             if match[i] == 'exact':
                 relevant_cols = [columns[i]]
             elif match[i] == 'like':
-
                 relevant_cols = [name for name in names if columns[i] == name[0:len(columns[i])]]
             else:
                 raise ValueError("Match should be 'exact' or 'like' for " + str(i) + ".")
 
             max_values = []
             min_values = []
-
-
 
             # Pass through the relevant columns.
             for j in range(0, len(relevant_cols)):
@@ -102,12 +99,9 @@ class VisualizeDataset:
             xar[i].tick_params(axis='y', labelsize=10)
             xar[i].legend(relevant_cols, fontsize='xx-small', numpoints=1, loc='upper center',
                           bbox_to_anchor=(0.5, 1.3), ncol=len(relevant_cols), fancybox=True, shadow=True)
-            try:
-                xar[i].set_ylim([min(min_values) - 0.1*(max(max_values) - min(min_values)),
+            xar[i].set_ylim([min(min_values) - 0.1*(max(max_values) - min(min_values)),
                              max(max_values) + 0.1*(max(max_values) - min(min_values))])
-            except Exception as exc:
-                print(exc)
-                print(i)
+
         # Make sure we get a nice figure with only a single x-axis and labels there.
         plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
         plt.xlabel('time')

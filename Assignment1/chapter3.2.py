@@ -93,15 +93,15 @@ if __name__ == '__main__':
     light_phone_col = "light_phone_lux"
     acc_phone_col = "acc_phone_x"
 
-    print("Doing Chauvenet")
-    compute_chauvenet(dataset=data, columns=[light_phone_col, acc_phone_col], values=[1,2,10])
+    # print("Doing Chauvenet")
+    # compute_chauvenet(dataset=data, columns=[light_phone_col, acc_phone_col], values=[1,2,10])
     print("Doing Mixture Models")
     compute_mixture(dataset=data, columns=[light_phone_col, acc_phone_col], values=[1,3,10])
-    print("Doing Euclidean Distance")
-    compute_euclidean_distance(dataset=data, columns=[light_phone_col, acc_phone_col], values=[[0.01, 0.99],
-                                                                                               [0.1, 0.99],
-                                                                                               [0.5, 0.99]])
-    print("Doing Local Outlier Factor")
-    compute_local_outlier(dataset=data, columns=[light_phone_col, acc_phone_col], values=[2, 5, 10])
-    print("DONE!")
+    # print("Doing Euclidean Distance")
+    # compute_euclidean_distance(dataset=data, columns=[light_phone_col, acc_phone_col], values=[[0.01, 0.99],
+    #                                                                                            [0.1, 0.99],
+    #                                                                                            [0.5, 0.99]])
+    # print("Doing Local Outlier Factor")
+    # compute_local_outlier(dataset=data, columns=[light_phone_col, acc_phone_col], values=[2, 5, 10])
+    # print("DONE!")
 

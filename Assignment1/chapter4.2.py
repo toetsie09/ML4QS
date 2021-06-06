@@ -130,8 +130,8 @@ if __name__ == '__main__':
                              # 'acc_phone_x_freq_weighted',
                              # 'acc_phone_x_pse',
                              'acc_phone_x_skewness',
-                             # 'acc_phone_x_kurtosis',
+                             'acc_phone_x_kurtosis',
                              'acc_phone_x_max_estim_power_spect_density',
                              'label'],
-                            list(repeat('like', times=9)),
-                            list(repeat('line', times=8)) + ['points'])
+                            list(repeat('like', times=6)),
+                            list(repeat('line', times=6)))

@@ -20,9 +20,11 @@ def get_statistics(data, cols):
 
 def extract_frequencies(dataset, columns, label):
     # Let's retrieve same length as running for better comparison
+    print(label)
+    print(len(dataset[dataset[label] != 0]))
     activity = dataset[dataset[label] != 0][:len(dataset[dataset["labelRunning"] != 0])]
     # Visualize data
-    visualizer.plot_dataset(activity, cols, ['like', 'like', 'like', 'like'], ['line', 'line', 'line', 'points'])
+    visualizer.plot_dataset(activity, cols, ['like', 'like', 'like', 'like'], ['line', 'line', 'line', 'line'])
     # Get statistics of relevant columns
     get_statistics(activity, columns)
 
@@ -36,7 +38,7 @@ if __name__ == '__main__':
     col = 'acc_phone_x'
 
     # Columns we are interested in
-    cols = ['acc_phone_x_max_freq', 'acc_phone_x_freq_weighted', 'acc_phone_x_pse', 'label']
+    cols = ['acc_phone_x_max_freq', 'acc_phone_x_freq_weighted', 'acc_phone_x_pse']
 
     milliseconds_per_instance = (data.index[1] - data.index[0]).microseconds / 1000
     fs = float(1000) / milliseconds_per_instance

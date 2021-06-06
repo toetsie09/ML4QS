@@ -1,9 +1,11 @@
 import math
 from typing import List
+
+import numpy
 import pandas
 import copy
 from scipy import special
-from sklearn import mixture
+from sklearn.mixture import GaussianMixture
 
 from Python3Code.Chapter3.OutlierDetection import DistanceBasedOutlierDetection
 from Python3Code.util.VisualizeDataset import VisualizeDataset
@@ -42,14 +44,15 @@ def chauvenet(data_table: pandas.DataFrame, col: str, c: float) -> pandas.DataFr
 def mixture_model(data_table: pandas.DataFrame, col: str, k: float) -> pandas.DataFrame:
     # Fit a mixture model to our data.
     dataset = data_table[data_table[col].notnull()][col]
-    g = mixture.GMM(n_components=k, n_iter=1)
-    g.fit(dataset.reshape(-1, 1))
+    g = GaussianMixture(n_components=k, max_iter=100, n_init=1)
+    reshaped_data = numpy.nan_to_num(numpy.array(data.values.reshape(-1, 1)))
+    g.fit(reshaped_data)
 
     # Predict the probabilities
-    probs = g.score(dataset.reshape(-1, 1))
+    probs = g.score(reshaped_data)
 
     # Create the right data frame and concatenate the two.
-    data_probs = pandas.DataFrame(pandas.power(10, probs), index=dataset.index, columns=[col + '_mixture'])
+    data_probs = pandas.DataFrame(numpy.power(10, probs), index=dataset.index, columns=[col + '_mixture'])
     data_table = pandas.concat([data_table, data_probs], axis=1)
     return data_table
 
@@ -64,7 +67,7 @@ def compute_chauvenet(dataset, columns: List[str], values: List[float]):
 def compute_mixture(dataset: pandas.DataFrame, columns: List[str], values: List[float]):
     for col in columns:
         for val in values:
-            mixture_outliers = chauvenet(copy.deepcopy(dataset), col, val)
+            mixture_outliers = mixture_model(copy.deepcopy(dataset), col, val)
             visualizer.plot_dataset(mixture_outliers, [col, col + '_mixture'], ['exact','exact'], ['line', 'points'])
 
 
@@ -89,9 +92,15 @@ data = pandas.read_csv("../Python3Code/intermediate_datafiles/chapter2_result.cs
 light_phone_col = "light_phone_lux"
 acc_phone_col = "acc_phone_x"
 
-compute_chauvenet(dataset=data, columns=[light_phone_col, acc_phone_col], values=[2,10])
-compute_mixture(dataset=data, columns=[light_phone_col, acc_phone_col], values=[])
-compute_euclidean_distance(dataset=data, columns=[light_phone_col, acc_phone_col], values=[])
-compute_local_outlier(dataset=data, columns=[light_phone_col, acc_phone_col], values=[])
-
+print("Doing Chauvenet")
+compute_chauvenet(dataset=data, columns=[light_phone_col, acc_phone_col], values=[1,2,10])
+print("Doing Mixture Models")
+compute_mixture(dataset=data, columns=[light_phone_col, acc_phone_col], values=[1,3,10])
+print("Doing Euclidean Distance")
+compute_euclidean_distance(dataset=data, columns=[light_phone_col, acc_phone_col], values=[[0.01, 0.99],
+                                                                                           [0.1, 0.99],
+                                                                                           [0.5, 0.99]])
+print("Doing Local Outlier Factor")
+compute_local_outlier(dataset=data, columns=[light_phone_col, acc_phone_col], values=[2, 5, 10])
+print("DONE!")
 

@@ -6,6 +6,7 @@ import numpy as np
 from scipy import signal
 from scipy.stats import skew, kurtosis as kurt
 
+from Python3Code.Chapter4.TemporalAbstraction import NumericalAbstraction
 from Python3Code.util.VisualizeDataset import VisualizeDataset
 from Python3Code.Chapter4.FrequencyAbstraction import FourierTransformation
 
@@ -107,15 +108,30 @@ if __name__ == '__main__':
     fs = float(1000) / milliseconds_per_instance
     ws = int(float(10000) / milliseconds_per_instance)
 
-    data_abstract_f = abstract_frequency(copy.deepcopy(dataset), [col], ws, fs)
+    dataset_f = abstract_frequency(copy.deepcopy(dataset), [col], ws, fs)
+    dataset['acc_phone_x_max_freq'] = dataset_f["acc_phone_x_max_freq"]
+    dataset['acc_phone_x_freq_weighted'] = dataset_f["acc_phone_x_freq_weighted"]
+    dataset['acc_phone_x_pse'] = dataset_f["acc_phone_x_pse"]
+    dataset['acc_phone_x_skewness'] = dataset_f["acc_phone_x_skewness"]
+    dataset['acc_phone_x_kurtosis'] = dataset_f["acc_phone_x_kurtosis"]
+    dataset['acc_phone_x_max_estim_power_spect_density'] = dataset_f["acc_phone_x_max_estim_power_spect_density"]
 
-    visualizer.plot_dataset(data_abstract_f,
-                            ['acc_phone_x_max_freq',
-                              'acc_phone_x_freq_weighted',
-                              'acc_phone_x_pse',
-                              'acc_phone_x_skewness',
-                              'acc_phone_x_kurtosis',
-                              'acc_phone_x_max_estim_power_spect_density',
-                              'label'],
-                            list(repeat('like', times=7)),
-                            list(repeat('line', times=6)) + ['points'])
+    dataset["acc_phone_x_mean"] = NumericalAbstraction().aggregate_value(dataset["acc_phone_x"],
+                                                                                 window_size=ws,
+                                                                                 aggregation_function="mean")
+    dataset["acc_phone_x_std"] = NumericalAbstraction().aggregate_value(dataset["acc_phone_x"],
+                                                                                 window_size=ws,
+                                                                                 aggregation_function="std")
+    print(dataset.columns)
+    visualizer.plot_dataset(dataset,
+                            ["acc_phone_x_mean",
+                             "acc_phone_x_std",
+                             # 'acc_phone_x_max_freq',
+                             # 'acc_phone_x_freq_weighted',
+                             # 'acc_phone_x_pse',
+                             'acc_phone_x_skewness',
+                             # 'acc_phone_x_kurtosis',
+                             'acc_phone_x_max_estim_power_spect_density',
+                             'label'],
+                            list(repeat('like', times=9)),
+                            list(repeat('line', times=8)) + ['points'])

@@ -10,9 +10,9 @@
 # Import the relevant classes.
 import pandas as pd
 
-from Chapter2.CreateDataset import CreateDataset
-from util.VisualizeDataset import VisualizeDataset
-from util import util
+from Python3Code.Chapter2.CreateDataset import CreateDataset
+from Python3Code.util.VisualizeDataset import VisualizeDataset
+from Python3Code.util import util
 from pathlib import Path
 import copy
 import os
@@ -20,7 +20,7 @@ import sys
 
 # Chapter 2: Initial exploration of the dataset.
 
-DATASET_PATH = Path('./datasets/SensorRecord/FinalFiles')
+DATASET_PATH = Path('../Python3Code/datasets/SensorRecord/FinalFiles')
 RESULT_PATH = Path('./intermediate_datafiles/personal')
 RESULT_FNAME = 'chapter2_result.csv'
 

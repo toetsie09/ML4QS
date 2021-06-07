@@ -19,7 +19,7 @@ import sys
 # Chapter 2: Initial exploration of the dataset.
 
 DATASET_PATH = Path('./datasets/crowdsignals/csv-participant-one/')
-RESULT_PATH = Path('./intermediate_datafiles/')
+RESULT_PATH = Path('./intermediate_datafiles/crowdsignal/')
 RESULT_FNAME = 'chapter2_result.csv'
 
 # Set a granularity (the discrete step size of our time series data). We'll use a course-grained granularity of one
@@ -42,15 +42,15 @@ for milliseconds_per_instance in GRANULARITIES:
     # We add the accelerometer data (continuous numerical measurements) of the phone and the smartwatch
     # and aggregate the values per timestep by averaging the values
     dataset.add_numerical_dataset('accelerometer_phone.csv', 'timestamps', ['x','y','z'], 'avg', 'acc_phone_')
-    # dataset.add_numerical_dataset('accelerometer_smartwatch.csv', 'timestamps', ['x','y','z'], 'avg', 'acc_watch_')
+    dataset.add_numerical_dataset('accelerometer_smartwatch.csv', 'timestamps', ['x','y','z'], 'avg', 'acc_watch_')
 
     # We add the gyroscope data (continuous numerical measurements) of the phone and the smartwatch
     # and aggregate the values per timestep by averaging the values
     dataset.add_numerical_dataset('gyroscope_phone.csv', 'timestamps', ['x','y','z'], 'avg', 'gyr_phone_')
-    # dataset.add_numerical_dataset('gyroscope_smartwatch.csv', 'timestamps', ['x','y','z'], 'avg', 'gyr_watch_')
+    dataset.add_numerical_dataset('gyroscope_smartwatch.csv', 'timestamps', ['x','y','z'], 'avg', 'gyr_watch_')
 
     # We add the heart rate (continuous numerical measurements) and aggregate by averaging again
-    # dataset.add_numerical_dataset('heart_rate_smartwatch.csv', 'timestamps', ['rate'], 'avg', 'hr_watch_')
+    dataset.add_numerical_dataset('heart_rate_smartwatch.csv', 'timestamps', ['rate'], 'avg', 'hr_watch_')
 
     # We add the labels provided by the users. These are categorical events that might overlap. We add them
     # as binary attributes (i.e. add a one to the attribute representing the specific value for the label if it
@@ -62,8 +62,8 @@ for milliseconds_per_instance in GRANULARITIES:
 
     # We add the magnetometer data (continuous numerical measurements) of the phone and the smartwatch
     # and aggregate the values per timestep by averaging the values
-    # dataset.add_numerical_dataset('magnetometer_phone.csv', 'timestamps', ['x','y','z'], 'avg', 'mag_phone_')
-    # dataset.add_numerical_dataset('magnetometer_smartwatch.csv', 'timestamps', ['x','y','z'], 'avg', 'mag_watch_')
+    dataset.add_numerical_dataset('magnetometer_phone.csv', 'timestamps', ['x','y','z'], 'avg', 'mag_phone_')
+    dataset.add_numerical_dataset('magnetometer_smartwatch.csv', 'timestamps', ['x','y','z'], 'avg', 'mag_watch_')
 
     # We add the pressure sensed by the phone (continuous numerical measurements) and aggregate by averaging again
     dataset.add_numerical_dataset('pressure_phone.csv', 'timestamps', ['pressure'], 'avg', 'press_phone_')
@@ -72,28 +72,22 @@ for milliseconds_per_instance in GRANULARITIES:
     dataset = dataset.data_table
 
     # Plot the data
-    DataViz = VisualizeDataset(__file__, milliseconds_per_instance)
-
-    print(dataset.columns)
+    DataViz = VisualizeDataset(__file__)
 
     # Boxplot
-    DataViz.plot_dataset_boxplot(dataset, ['acc_phone_x', 'acc_phone_y', 'acc_phone_z',
-                                           'gyr_phone_x', 'gyr_phone_y', 'gyr_phone_z'])
+    DataViz.plot_dataset_boxplot(dataset, ['acc_phone_x','acc_phone_y','acc_phone_z','acc_watch_x','acc_watch_y','acc_watch_z'])
 
     # Plot all data
-    # DataViz.plot_dataset(dataset, ['acc_', 'gyr_', 'hr_watch_rate', 'light_phone_lux', 'mag_', 'press_phone_', 'label'],
-    #                               ['like', 'like', 'like', 'like', 'like', 'like', 'like','like'],
-    #                               ['line', 'line', 'line', 'line', 'line', 'line', 'points', 'points'])
-    # Plot all data
-    DataViz.plot_dataset(dataset, ['acc_', 'gyr_', 'light_phone_lux', 'press_phone_', 'label'],
-                                  ['like', 'like', 'like', 'like', 'like'],
-                                  ['line', 'line', 'line', 'points', 'points'])
+    DataViz.plot_dataset(dataset, ['acc_', 'gyr_', 'hr_watch_rate', 'light_phone_lux', 'mag_', 'press_phone_', 'label'],
+                                  ['like', 'like', 'like', 'like', 'like', 'like', 'like','like'],
+                                  ['line', 'line', 'line', 'line', 'line', 'line', 'points', 'points'])
+
     # And print a summary of the dataset.
     util.print_statistics(dataset)
     datasets.append(copy.deepcopy(dataset))
 
     # If needed, we could save the various versions of the dataset we create in the loop with logical filenames:
-    dataset.to_csv(RESULT_PATH / f'chapter2_result_{milliseconds_per_instance}')
+    # dataset.to_csv(RESULT_PATH / f'chapter2_result_{milliseconds_per_instance}')
 
 
 # Make a table like the one shown in the book, comparing the two datasets produced.

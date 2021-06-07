@@ -1,4 +1,4 @@
-from Python3Code.util.util import get_chapter
+from util.util import get_chapter
 
 import matplotlib.colors as cl
 import matplotlib.pyplot as plt
@@ -25,18 +25,17 @@ class VisualizeDataset:
     colors = ['r', 'g', 'b', 'c', 'm', 'y', 'k']
 
     # Set some initial attributes to define and create a save location for the images.
-    def __init__(self, module_path='.py', granularity=''):
+    def __init__(self, module_path='.py'):
         subdir = Path(module_path).name.split('.')[0]
 
         self.plot_number = 1
         self.figures_dir = Path('figures') / subdir
         self.figures_dir.mkdir(exist_ok=True, parents=True)
-        self.granularity = granularity
 
 
     def save(self, plot_obj, formats=('png',)): # 'svg'
 
-        fig_name = f'figure_{self.plot_number}_{self.granularity}'
+        fig_name = f'figure_{self.plot_number}'
 
         for format in formats:
             save_path = self.figures_dir / f'{fig_name}.{format}'
@@ -82,6 +81,8 @@ class VisualizeDataset:
             max_values = []
             min_values = []
 
+
+
             # Pass through the relevant columns.
             for j in range(0, len(relevant_cols)):
                 # Create a mask to ignore the NaN and Inf values when plotting:
@@ -100,6 +101,7 @@ class VisualizeDataset:
             xar[i].tick_params(axis='y', labelsize=10)
             xar[i].legend(relevant_cols, fontsize='xx-small', numpoints=1, loc='upper center',
                           bbox_to_anchor=(0.5, 1.3), ncol=len(relevant_cols), fancybox=True, shadow=True)
+
             xar[i].set_ylim([min(min_values) - 0.1*(max(max_values) - min(min_values)),
                              max(max_values) + 0.1*(max(max_values) - min(min_values))])
 

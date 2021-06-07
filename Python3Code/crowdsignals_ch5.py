@@ -27,7 +27,7 @@ import argparse
 def main():
 
     # As usual, we set our program constants, read the input file and initialize a visualization object.
-    DATA_PATH = Path('./intermediate_datafiles/')
+    DATA_PATH = Path('./intermediate_datafiles/crowdsignal/')
     DATASET_FNAME = 'chapter4_result.csv'
     RESULT_FNAME = 'chapter5_result.csv'
 

@@ -20,9 +20,9 @@ import sys
 
 # Chapter 2: Initial exploration of the dataset.
 
-DATASET_PATH = Path('./datasets/SensorRecord/')
-RESULT_PATH = Path('./intermediate_datafiles/')
-RESULT_FNAME = 'personal_chapter2_result.csv'
+DATASET_PATH = Path('./datasets/SensorRecord/FinalFiles')
+RESULT_PATH = Path('./intermediate_datafiles/personal')
+RESULT_FNAME = 'chapter2_result.csv'
 
 # Set a granularity (the discrete step size of our time series data). We'll use a course-grained granularity of one
 # instance per minute, and a fine-grained one with four instances per second.
@@ -71,4 +71,3 @@ for milliseconds_per_instance in GRANULARITIES:
     datasets.append(copy.deepcopy(dataset))
 
     dataset.to_csv(RESULT_PATH / f'chapter2_result_{milliseconds_per_instance}')
-

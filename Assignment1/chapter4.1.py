@@ -1,8 +1,8 @@
 import pandas
 import copy
 
-from Python3Code.util.VisualizeDataset import VisualizeDataset
-from Python3Code.Chapter4.FrequencyAbstraction import FourierTransformation
+from util.VisualizeDataset import VisualizeDataset
+from Chapter4.FrequencyAbstraction import FourierTransformation
 
 visualizer = VisualizeDataset()
 FreqAbs = FourierTransformation()
@@ -31,7 +31,7 @@ def extract_frequencies(dataset, columns, label):
 
 if __name__ == '__main__':
     # Load data (use ch3 csv data)
-    data = pandas.read_csv("../Python3Code/intermediate_datafiles/chapter3_result_outliers.csv", index_col=0)
+    data = pandas.read_csv("../intermediate_datafiles/chapter3_result_outliers.csv", index_col=0)
     data.index = pandas.to_datetime(data.index)
 
     # Chose this because it looked more stable

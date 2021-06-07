@@ -7,8 +7,8 @@ import copy
 from scipy import special
 from sklearn.mixture import GaussianMixture
 
-from Python3Code.Chapter3.OutlierDetection import DistanceBasedOutlierDetection
-from Python3Code.util.VisualizeDataset import VisualizeDataset
+from Chapter3.OutlierDetection import DistanceBasedOutlierDetection
+from util.VisualizeDataset import VisualizeDataset
 
 
 visualizer = VisualizeDataset()
@@ -89,7 +89,7 @@ def compute_local_outlier(dataset: pandas.DataFrame, columns: List[str], values:
 
 
 if __name__ == '__main__':
-    data = pandas.read_csv("../Python3Code/intermediate_datafiles/crowdsignal/chapter2_result.csv", index_col=0)
+    data = pandas.read_csv("../intermediate_datafiles/crowdsignal/chapter2_result.csv", index_col=0)
     light_phone_col = "light_phone_lux"
     acc_phone_col = "acc_phone_x"
 

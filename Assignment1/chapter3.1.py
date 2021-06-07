@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 
-from Python3Code.Chapter3.ModelBasedImputation import ModelBasedImputation
+from Chapter3.ModelBasedImputation import ModelBasedImputation
 
 DATA_PATH = Path('../Python3Code/intermediate_datafiles/')
 ORIG_DATASET_FNAME = 'chapter2_result.csv'

@@ -10,9 +10,9 @@
 # Import the relevant classes.
 import pandas as pd
 
-from Python3Code.Chapter2.CreateDataset import CreateDataset
-from Python3Code.util.VisualizeDataset import VisualizeDataset
-from Python3Code.util import util
+from Chapter2.CreateDataset import CreateDataset
+from util.VisualizeDataset import VisualizeDataset
+from util import util
 from pathlib import Path
 import copy
 import os

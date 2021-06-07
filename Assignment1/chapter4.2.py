@@ -6,9 +6,9 @@ import numpy as np
 from scipy import signal
 from scipy.stats import skew, kurtosis as kurt
 
-from Python3Code.Chapter4.TemporalAbstraction import NumericalAbstraction
-from Python3Code.util.VisualizeDataset import VisualizeDataset
-from Python3Code.Chapter4.FrequencyAbstraction import FourierTransformation
+from Chapter4.TemporalAbstraction import NumericalAbstraction
+from util.VisualizeDataset import VisualizeDataset
+from Chapter4.FrequencyAbstraction import FourierTransformation
 
 visualizer = VisualizeDataset()
 FreqAbs = FourierTransformation()
@@ -96,7 +96,7 @@ def abstract_frequency(data_table, columns, window_size, sampling_rate):
 
 if __name__ == '__main__':
     # Load data (use ch3 csv data)
-    dataset = pandas.read_csv("../Python3Code/intermediate_datafiles/chapter3_result_outliers.csv", index_col=0)
+    dataset = pandas.read_csv("../intermediate_datafiles/chapter3_result_outliers.csv", index_col=0)
     dataset.index = pandas.to_datetime(dataset.index)
 
     # Chose this because it looked more stable

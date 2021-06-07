@@ -46,7 +46,7 @@ def combine_measurement_files(dir_paths, dir_names, result_path):
     for i, a in enumerate(attributes):
         df_list[i].to_csv(result_path/a)
 
-ROOT_DIR = Path('./SensorRecord')
+ROOT_DIR = Path('./SensorRecord/continuous')
 DIRS_PATHS, DIRS_NAMES = collect_dir_paths(ROOT_DIR)
 RESULT_PATH = Path('./SensorRecord/FinalFiles')
 

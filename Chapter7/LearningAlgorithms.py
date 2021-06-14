@@ -45,7 +45,8 @@ class ClassificationAlgorithms:
             nn = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes, activation=activation, max_iter=max_iter, learning_rate=learning_rate, alpha=alpha, random_state=42)
 
         # Fit the model
-        nn.fit(train_X, train_y.values.ravel())
+        print(train_y.ravel())
+        nn.fit(train_X, train_y.ravel())
 
         if gridsearch and print_model_details:
             print(nn.best_params_)
@@ -58,6 +59,7 @@ class ClassificationAlgorithms:
         pred_prob_test_y = nn.predict_proba(test_X)
         pred_training_y = nn.predict(train_X)
         pred_test_y = nn.predict(test_X)
+        print(pred_prob_training_y)
         frame_prob_training_y = pd.DataFrame(pred_prob_training_y, columns=nn.classes_)
         frame_prob_test_y = pd.DataFrame(pred_prob_test_y, columns=nn.classes_)
 
@@ -77,7 +79,7 @@ class ClassificationAlgorithms:
             svm = SVC(C=C, kernel=kernel, gamma=gamma, probability=True, cache_size=7000)
 
         # Fit the model
-        svm.fit(train_X, train_y.values.ravel())
+        svm.fit(train_X, train_y.ravel())
 
         if gridsearch and print_model_details:
             print(svm.best_params_)
@@ -109,7 +111,7 @@ class ClassificationAlgorithms:
             svm = LinearSVC(C=C, tol=tol, max_iter=max_iter)
 
         # Fit the model
-        svm.fit(train_X, train_y.values.ravel())
+        svm.fit(train_X, train_y.ravel())
 
         if gridsearch and print_model_details:
             print(svm.best_params_)
@@ -144,7 +146,7 @@ class ClassificationAlgorithms:
             knn = KNeighborsClassifier(n_neighbors=n_neighbors)
 
         # Fit the model
-        knn.fit(train_X, train_y.values.ravel())
+        knn.fit(train_X, train_y.ravel())
 
         if gridsearch and print_model_details:
             print(knn.best_params_)
@@ -178,7 +180,7 @@ class ClassificationAlgorithms:
 
         # Fit the model
 
-        dtree.fit(train_X, train_y.values.ravel())
+        dtree.fit(train_X, train_y.ravel())
 
         if gridsearch and print_model_details:
             print(dtree.best_params_)
@@ -215,7 +217,7 @@ class ClassificationAlgorithms:
         # Create the model
         nb = GaussianNB()
         
-        train_y = train_y.values.ravel()
+        train_y = train_y.ravel()
         # Fit the model
         nb.fit(train_X, train_y)
 
@@ -236,17 +238,11 @@ class ClassificationAlgorithms:
     # probabilities associated with each class, each class being represented as a column in the data frame.
     def random_forest(self, train_X, train_y, test_X, n_estimators=10, min_samples_leaf=5, criterion='gini', print_model_details=False, gridsearch=True):
 
-        if gridsearch:
-            tuned_parameters = [{'min_samples_leaf': [2, 10, 50, 100, 200],
-                                 'n_estimators':[10, 50, 100],
-                                 'criterion':['gini', 'entropy']}]
-            rf = GridSearchCV(RandomForestClassifier(), tuned_parameters, cv=5, scoring='accuracy')
-        else:
-            rf = RandomForestClassifier(n_estimators=n_estimators, min_samples_leaf=min_samples_leaf, criterion=criterion)
+        rf = RandomForestClassifier(n_estimators=n_estimators, min_samples_leaf=min_samples_leaf, criterion=criterion)
 
         # Fit the model
 
-        rf.fit(train_X, train_y.values.ravel())
+        rf.fit(train_X, train_y.ravel())
 
         if gridsearch and print_model_details:
             print(rf.best_params_)

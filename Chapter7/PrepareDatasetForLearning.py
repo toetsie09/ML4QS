@@ -54,16 +54,16 @@ class PrepareDatasetForLearning:
     # to make the split reproducible.
     def split_single_dataset_classification(self, dataset, class_labels, matching, training_frac, filter=True, temporal=False, random_state=0):
         # Create a single class column if we have the 'like' option.
-        if matching == 'like':
-            dataset = self.assign_label(dataset, class_labels)
-            class_labels = self.class_col
-        elif len(class_labels) == 1:
-            class_labels = class_labels[0]
+        # if matching == 'like':
+        #     dataset = self.assign_label(dataset, class_labels)
+        #     class_labels = self.class_col
+        # if len(class_labels) == 1:
+        #     class_labels = class_labels[0]
 
         # Filer NaN is desired and those for which we cannot determine the class should be removed.
         if filter:
             dataset = dataset.dropna()
-            dataset = dataset[dataset['class'] != self.default_label]
+            # dataset = dataset[dataset['class'] != self.default_label]
 
         # The features are the ones not in the class label.
         features = [dataset.columns.get_loc(x) for x in dataset.columns if x not in class_labels]

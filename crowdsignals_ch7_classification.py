@@ -65,14 +65,14 @@ print('Test set length is: ', len(test_X.index))
 
 basic_features = ['acc_phone_x','acc_phone_y','acc_phone_z','acc_watch_x','acc_watch_y','acc_watch_z','gyr_phone_x','gyr_phone_y','gyr_phone_z','gyr_watch_x','gyr_watch_y','gyr_watch_z',
                   'hr_watch_rate', 'light_phone_lux','mag_phone_x','mag_phone_y','mag_phone_z','mag_watch_x','mag_watch_y','mag_watch_z','press_phone_pressure']
-pca_features = ['pca_1','pca_2','pca_3','pca_4','pca_5','pca_6','pca_7']
-time_features = [name for name in dataset.columns if '_temp_' in name]
-freq_features = [name for name in dataset.columns if (('_freq' in name) or ('_pse' in name))]
+pca_features = []
+time_features = []
+freq_features = []
 print('#basic features: ', len(basic_features))
 print('#PCA features: ', len(pca_features))
 print('#time features: ', len(time_features))
 print('#frequency features: ', len(freq_features))
-cluster_features = ['cluster']
+cluster_features = []
 print('#cluster features: ', len(cluster_features))
 features_after_chapter_3 = list(set().union(basic_features, pca_features))
 features_after_chapter_4 = list(set().union(basic_features, pca_features, time_features, freq_features))
@@ -113,7 +113,8 @@ for reg_param in reg_parameters:
     performance_tr = 0
     performance_te = 0
     for i in range(0, N_REPEATS_NN):
-
+        print(train_X.columns)
+        print(train_y.columns)
         class_train_y, class_test_y, class_train_prob_y, class_test_prob_y = learner.feedforward_neural_network(
             train_X, train_y,
             test_X, hidden_layer_sizes=(250, ), alpha=reg_param, max_iter=500,

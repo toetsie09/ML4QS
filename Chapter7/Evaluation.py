@@ -48,6 +48,8 @@ class RegressionEvaluation:
 
     # Returns the mean squared error between the true and predicted values.
     def mean_squared_error(self, y_true, y_pred):
+        print(f"label {y_true}")
+        print(f"pred {y_pred}")
         return metrics.mean_squared_error(y_true, y_pred)
 
     # Returns the mean squared error between the true and predicted values.

@@ -165,6 +165,10 @@ class TemporalClassificationAlgorithms:
 
             if error == 'mse':
                 eval = RegressionEvaluation()
+                print("yo1")
+                print(test_params_y)
+                print("yo2")
+                print(pred_test_y_prob)
                 mse = eval.mean_squared_error(test_params_y, pred_test_y_prob)
                 if mse < best_error:
                     best_error = mse

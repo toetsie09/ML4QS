@@ -94,8 +94,8 @@ def low_pass_filter(dataset, cutoff=1.5):
 
     periodic_measurements = ['acc_x', 'acc_y', 'acc_z',
                              'gyro_x', 'gyro_y', 'gyro_z']
-    # milliseconds_per_instance = (dataset.index[1] - dataset.index[0]).microseconds / 1000
-    fs = 1000 / 250
+    milliseconds_per_instance = (dataset.index[1] - dataset.index[0]).microseconds / 1000
+    fs = float(1000) / milliseconds_per_instance
 
     for col in periodic_measurements:
         dataset = LowPass.low_pass_filter(dataset, col, fs, cutoff, order=10)

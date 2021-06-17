@@ -33,9 +33,9 @@ class VisualizeDataset:
         self.figures_dir.mkdir(exist_ok=True, parents=True)
 
 
-    def save(self, plot_obj, formats=('png',)): # 'svg'
+    def save(self, plot_obj, name="", formats=('png',)): # 'svg'
 
-        fig_name = f'figure_{self.plot_number}'
+        fig_name = name + f'_figure_{self.plot_number}'
 
         for format in formats:
             save_path = self.figures_dir / f'{fig_name}.{format}'
@@ -48,7 +48,7 @@ class VisualizeDataset:
     # among multiple attributes (e.g. label which occurs as labelWalking, etc). In such a case they are plotted
     # in the same graph. The display should express whether points or a line should be plotted.
     # Match can be 'exact' or 'like'. Display can be 'points' or 'line'.
-    def plot_dataset(self, data_table, columns, match='like', display='line'):
+    def plot_dataset(self, data_table, columns, match='like', display='line', name=""):
         names = list(data_table.columns)
 
         # Create subplots if more columns are specified.
@@ -81,8 +81,6 @@ class VisualizeDataset:
             max_values = []
             min_values = []
 
-
-
             # Pass through the relevant columns.
             for j in range(0, len(relevant_cols)):
                 # Create a mask to ignore the NaN and Inf values when plotting:
@@ -108,7 +106,7 @@ class VisualizeDataset:
         # Make sure we get a nice figure with only a single x-axis and labels there.
         plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
         plt.xlabel('time')
-        self.save(plt)
+        self.save(plt, name=name)
         plt.show()
 
     def plot_xy(self, x, y, method='plot', xlabel=None, ylabel=None, xlim=None, ylim=None, names=None,
@@ -132,10 +130,10 @@ class VisualizeDataset:
         self.save(plt)
         plt.show()
 
-    def plot_dataset_boxplot(self, dataset, cols):
+    def plot_dataset_boxplot(self, dataset, cols, name=''):
         plt.Figure(); dataset[cols].plot.box()
-        plt.ylim([-30,30])
-        self.save(plt)
+        # plt.ylim([-30,30])
+        self.save(plt, name=name)
         plt.show()
 
     # This function plots the real and imaginary amplitudes of the frequencies found in the Fourier transformation.

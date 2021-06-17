@@ -83,7 +83,7 @@ def imputation_interpolate(dataset):
         MisVal.impute_interpolate(dataset, col)
     return dataset
 
-def low_pass_filter(dataset, cutoff=1.5):
+def low_pass_filter(dataset, cutoff=1):
     """ This function applies a low pass filter
         Args:
             dataset: a pandas dataframe
@@ -149,8 +149,6 @@ def main():
                                       ['line', 'line'])
 
         dataset.to_csv(WRITE_PATH / file)
-
-
 
 
 if __name__ == '__main__':

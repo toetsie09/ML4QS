@@ -1,8 +1,11 @@
-from pathlib import Path
-import pandas as pd
-from CustomCreateDataset import CreateDataset
-from util.VisualizeDataset import VisualizeDataset
 import datetime
+import pandas as pd
+
+from pathlib import Path
+from CustomCreateDataset import CreateDataset
+from MergeDatasets import merge_datasets
+from util.VisualizeDataset import VisualizeDataset
+from util import util
 
 def collect_dir_paths(root_dir):
     """ This function collects all subfolders in specified folder.
@@ -49,84 +52,41 @@ def process_single_exercise(DATA_PATH, DATA_NAME, RESULT_PATH, cutoff=0, granula
     print(DATA_PATH)
     dataset = CreateDataset(DATA_PATH, granularity)
 
-    acc_names = ['Acceleration x (m/s^2)', 'Acceleration y (m/s^2)', 'Acceleration z (m/s^2)']
+    acc_names = ['X (m/s^2)', 'Y (m/s^2)', 'Z (m/s^2)']
     acc_renames = ['acc_x', 'acc_y', 'acc_z']
     dataset.add_numerical_dataset('Accelerometer.csv', 'Time (s)', acc_names, 'avg', '')
 
-    gyro_names = ['Gyroscope x (rad/s)', 'Gyroscope y (rad/s)', 'Gyroscope z (rad/s)']
+    gyro_names = ['X (rad/s)', 'Y (rad/s)', 'Z (rad/s)']
     gyro_renames = ['gyro_x', 'gyro_y', 'gyro_z']
     dataset.add_numerical_dataset('Gyroscope.csv', 'Time (s)', gyro_names, 'avg', '')
-    # dataset.add_numerical_dataset('RotationVector.csv', 'Timestamp', ['X', 'Y', 'Z', 'cos', 'headingAccuracy'], 'avg', 'rot_phone_')
+
+    magnet_names = ['X (µT)', 'Y (µT)', 'Z (µT)']
+    magnet_renames = ['magnet_x', 'magnet_y', 'magnet_z']
+    dataset.add_numerical_dataset('Magnetometer.csv', 'Time (s)', magnet_names, 'avg', '')
 
     # Get the resulting pandas data table
     dataset = dataset.data_table
 
-    print('type', dataset.index.dtype)
+    # print('type', dataset.index.dtype)
 
     # Rename the inconvenient column names
-    dataset.columns = acc_renames + gyro_renames
-    print(dataset.head())
+    dataset.columns = acc_renames + gyro_renames + magnet_renames
 
     # Show the number of missing values per column
-    print(dataset.shape)
-    print(dataset.isna().sum())
+    # print(dataset.shape)
+    # print(dataset.isna().sum())
 
-    # Plot the data
-    DataViz = VisualizeDataset(__file__)
-
-    # Boxplot
-    DataViz.plot_dataset_boxplot(dataset, acc_renames+gyro_renames)
-
-    # Plot all data
-    DataViz.plot_dataset(dataset, ['acc_', 'gyro'],
-                                  ['like', 'like'],
-                                  ['line', 'line'])
-
-    dataset = remove_edges(dataset, cutoff)
+    if cutoff > 0:
+        dataset = remove_edges(dataset, cutoff)
 
     dataset.to_csv(RESULT_PATH / f'{DATA_NAME}.csv')
 
-# def combine_measurement_files(dir_paths, dir_names, result_path):
-#     attributes = ['Accelerometer.csv', 'Gyroscope.csv', 'Light.csv', 'Pressure.csv']
-#
-#     df_labels = pd.DataFrame(columns=['label', 'label_start_datetime', 'label_end_datetime'])
-#     df_list = [pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame()]
-#
-#     for i, d in enumerate(dir_paths):
-#         max_time = None
-#         min_time = None
-#
-#         for j, a in enumerate(attributes):
-#             file_path = d / a
-#             # print(file_path)
-#             temp_df = pd.read_csv(file_path)
-#             # print('file len', len(temp_df))
-#
-#             # Select the beginning and ending time stamps
-#             if min_time is None or min(temp_df["Timestamp"]) < min_time:
-#                 min_time = min(temp_df["Timestamp"])
-#
-#             if max_time is None or max(temp_df["Timestamp"]) > max_time:
-#                 max_time = max(temp_df["Timestamp"])
-#
-#             # Add the measurement into the collective dataframe
-#             df_list[j] = pd.concat([df_list[j], temp_df])
-#
-#         # Assign the label to the according timepoints
-#         df_labels = df_labels.append({'label': dir_names[i][0:len(dir_names[i])-2],
-#                                       'label_start_datetime': min_time,
-#                                       'label_end_datetime': max_time}, ignore_index=True)
-#     df_labels.to_csv(result_path/'labels.csv')
-#
-#     # Save the combined attribute files into a csv file
-#     for i, a in enumerate(attributes):
-#         df_list[i].to_csv(result_path/a)
 
 if __name__ == '__main__':
     # number of seconds to remove near edges
     cutoff = 5
     # level of granularity
-    granularity = 1000
+    granularity = 250
 
     ROOT_DIR = Path('datasets/')
     RESULT_PATH = Path('./intermediate_datafiles/raw/')
@@ -138,5 +98,16 @@ if __name__ == '__main__':
     [path.mkdir(exist_ok=True, parents=True) for path in [ROOT_DIR, RESULT_PATH]]
 
     # Process a single exercise
-    # for DIR, NAME in zip(DIRS_PATHS, DIRS_NAMES):
-    process_single_exercise(DIRS_PATHS[0], DIRS_NAMES[0], RESULT_PATH)
+    for DIR, NAME in zip(DIRS_PATHS, DIRS_NAMES):
+        process_single_exercise(DIR, NAME, RESULT_PATH, cutoff=cutoff, granularity=granularity)
+
+    combined_dataset = merge_datasets(RESULT_PATH, dummy=True)
+    DataViz = VisualizeDataset(__file__)
+    DataViz.plot_dataset_boxplot(combined_dataset, ['acc_x', 'acc_y', 'acc_z'] + ['gyro_x', 'gyro_y', 'gyro_z'] +
+                                 ['magnet_x', 'magnet_y', 'magnet_z'], name=f'boxplot_raw_{granularity}_{cutoff}')
+
+    # Plot all data
+    util.print_statistics(combined_dataset)
+    DataViz.plot_dataset(combined_dataset, ['acc_', 'gyro_', 'magnet_', 'label'],
+                                           ['like', 'like', 'like', 'like'],
+                                           ['line', 'line', 'line', 'points'], name=f'plot_raw_{granularity}_{cutoff}')

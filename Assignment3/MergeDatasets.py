@@ -26,8 +26,8 @@ def merge_datasets(READ_PATH, dummy=False):
             default_timestamp = pd.Timestamp('1970-01-01 00:00:00')
             differences = temp_dataset.index - default_timestamp
             new_indexes = max_timer + differences
+            max_timer = new_indexes[-1]
         index_list.extend(new_indexes)
-
         final_dataset = final_dataset.append(temp_dataset, ignore_index=True)
 
     # Add dummy
@@ -36,7 +36,6 @@ def merge_datasets(READ_PATH, dummy=False):
         final_dataset = pd.concat([final_dataset, dummy_features], axis=1)
         del final_dataset['label']
     final_dataset.index = index_list
-
     return final_dataset
 
 if __name__ == "__main__":

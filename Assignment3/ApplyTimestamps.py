@@ -104,10 +104,10 @@ if __name__ == '__main__':
     combined_dataset = merge_datasets(RESULT_PATH, dummy=True)
     DataViz = VisualizeDataset(__file__)
     DataViz.plot_dataset_boxplot(combined_dataset, ['acc_x', 'acc_y', 'acc_z'] + ['gyro_x', 'gyro_y', 'gyro_z'] +
-                                 ['magnet_x', 'magnet_y', 'magnet_z'], name=f'boxplot_raw_{granularity}_{cutoff}')
+                                 ['magnet_x', 'magnet_y', 'magnet_z'], name=f'raw_{granularity}_{cutoff}')
 
     # Plot all data
-    util.print_statistics(combined_dataset)
+    # util.print_statistics(combined_dataset)
     DataViz.plot_dataset(combined_dataset, ['acc_', 'gyro_', 'magnet_', 'label'],
                                            ['like', 'like', 'like', 'like'],
-                                           ['line', 'line', 'line', 'points'], name=f'plot_raw_{granularity}_{cutoff}')
+                                           ['line', 'line', 'line', 'points'], name=f'raw_{granularity}_{cutoff}')

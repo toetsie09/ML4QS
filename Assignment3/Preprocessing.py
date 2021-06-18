@@ -3,7 +3,8 @@ from Chapter3.OutlierDetection import DistributionBasedOutlierDetection
 from Chapter3.OutlierDetection import DistanceBasedOutlierDetection
 from Chapter3.ImputationMissingValues import ImputationMissingValues
 from Chapter3.DataTransformation import LowPassFilter
-
+from MergeDatasets import merge_datasets
+from util import util
 import sys
 import copy
 import pandas as pd
@@ -17,15 +18,15 @@ def chauvenet(dataset):
         Args:
             dataset: pandas framework
     """
-    DataViz = VisualizeDataset(__file__)
+    # DataViz = VisualizeDataset(__file__)
     OutlierDistr = DistributionBasedOutlierDetection()
 
     # We use Chauvenet's criterion for the final version and apply it to all but the label data...
     for col in [c for c in dataset.columns]:
-        print(f'Measurement is now: {col}')
+        # print(f'Measurement is now: {col}')
         dataset = OutlierDistr.chauvenet(dataset, col)
         # Visualize the outliers
-        DataViz.plot_binary_outliers(dataset, col, col + '_outlier')
+        # DataViz.plot_binary_outliers(dataset, col, col + '_outlier')
         dataset.loc[dataset[f'{col}_outlier'] == True, col] = np.nan
         del dataset[col + '_outlier']
     return dataset
@@ -35,13 +36,13 @@ def distance(dataset):
         Args:
             dataset: pandas framework
     """
-    DataViz = VisualizeDataset(__file__)
+    # DataViz = VisualizeDataset(__file__)
     OutlierDist = DistanceBasedOutlierDetection()
 
     for col in [c for c in dataset.columns]:
-        print(f"Applying distance outlier criteria for column {col}")
+        # print(f"Applying distance outlier criteria for column {col}")
         try:
-            dataset = OutlierDist.simple_distance_based(dataset, [col], 'euclidean', FLAGS.dmin, FLAGS.fmin)
+            dataset = OutlierDist.simple_distance_based(dataset, [col], 'euclidean', 0.10, 0.99)
             # Visualize the outliers
             # DataViz.plot_binary_outliers(dataset, col, 'simple_dist_outlier')
             dataset.loc[dataset['simple_dist_outlier'] == True, col] = np.nan
@@ -53,7 +54,7 @@ def distance(dataset):
             print('Skipping.')
     return dataset
 
-def imputation_mean(dataset):
+def mean(dataset):
     """ This function fill in missing values
         Args:
             dataset: a pandas dataframe
@@ -63,7 +64,7 @@ def imputation_mean(dataset):
         MisVal.impute_mean(dataset, col)
     return dataset
 
-def imputation_median(dataset):
+def median(dataset):
     """ This function fill in missing values
         Args:
             dataset: a pandas dataframe
@@ -73,7 +74,7 @@ def imputation_median(dataset):
         MisVal.impute_median(dataset, col)
     return dataset
 
-def imputation_interpolate(dataset):
+def interpolate(dataset):
     """ This function fill in missing values
         Args:
             dataset: a pandas dataframe
@@ -93,7 +94,8 @@ def low_pass_filter(dataset, cutoff=1):
     LowPass = LowPassFilter()
 
     periodic_measurements = ['acc_x', 'acc_y', 'acc_z',
-                             'gyro_x', 'gyro_y', 'gyro_z']
+                             'gyro_x', 'gyro_y', 'gyro_z',
+                             'magnet_x', 'magnet_y', 'magnet_z']
     milliseconds_per_instance = (dataset.index[1] - dataset.index[0]).microseconds / 1000
     fs = float(1000) / milliseconds_per_instance
 
@@ -106,73 +108,45 @@ def low_pass_filter(dataset, cutoff=1):
         del dataset[col + '_lowpass']
     return dataset
 
-# Set up file names and locations.
-READ_PATH = Path('./intermediate_datafiles/raw/')
-WRITE_PATH = Path('./intermediate_datafiles/preprocessed/')
+def preprocess_file(READ_PATH, WRITE_PATH, outlier_method, imputation_method, cutoff=1.5):
+    print('Now preprocessing:', READ_PATH)
+    dataset = pd.read_csv(READ_PATH, index_col=0)
+    dataset.index = pd.to_datetime(dataset.index)
+    # print(dataset.head())
+    # print('missing values before \n', dataset.isna().sum())
+    dataset = outlier_method(dataset)
+    # print('missing values after removal\n', dataset.isna().sum())
+    dataset = imputation_method(dataset)
+    # print('missing values after imputation\n', dataset.isna().sum())
+    dataset = low_pass_filter(dataset, cutoff)
 
-def print_flags():
-    """
-    Prints all entries in FLAGS variable.
-    """
-    for key, value in vars(FLAGS).items():
-        print(key + ' : ' + str(value))
-
-def main():
-    print_flags()
-
-    outlier_method = distance
-    imputation_method = imputation_interpolate
-
-    [path.mkdir(exist_ok=True, parents=True) for path in [WRITE_PATH]]
-
-    files = os.listdir(READ_PATH)
-    print('all listed files in dir', files)
-    for file in files:
-        dataset = pd.read_csv(READ_PATH / file, index_col=0)
-        dataset.index = pd.to_datetime(dataset.index)
-        print(dataset.head())
-        print('missing values before \n', dataset.isna().sum())
-        dataset = outlier_method(dataset)
-        print('missing values after removal\n', dataset.isna().sum())
-        dataset = imputation_method(dataset)
-        print('missing values after imputation\n', dataset.isna().sum())
-        dataset = low_pass_filter(dataset)
-
-        DataViz = VisualizeDataset(__file__)
-
-        # Boxplot
-        DataViz.plot_dataset_boxplot(dataset, ['acc_x', 'acc_y', 'acc_z'] + ['gyro_x', 'gyro_y', 'gyro_z'])
-
-        # Plot all data
-        DataViz.plot_dataset(dataset, ['acc_', 'gyro'],
-                                      ['like', 'like'],
-                                      ['line', 'line'])
-
-        dataset.to_csv(WRITE_PATH / file)
+    dataset.to_csv(WRITE_PATH)
 
 
 if __name__ == '__main__':
-    # Command line arguments
-    parser = argparse.ArgumentParser()
+    # Set up file names and locations.
+    READ_PATH = Path('./intermediate_datafiles/raw/')
+    WRITE_PATH = Path('./intermediate_datafiles/preprocessed/')
 
-    parser.add_argument('--mode', type=str, default='final',
-                        help="Select what version to run: LOF, distance, mixture, chauvenet or final \
-                        'LOF' applies the Local Outlier Factor to a single variable \
-                        'distance' applies a distance based outlier detection method to a single variable \
-                        'mixture' applies a mixture model to detect outliers for a single variable\
-                        'chauvenet' applies Chauvenet outlier detection method to a single variable \
-                        'final' is used for the next chapter",
-                        choices=['LOF', 'distance', 'mixture', 'chauvenet', 'final'])
+    outlier_method = chauvenet
+    imputation_method = interpolate
+    filter_cutoff = 1.5
 
-    parser.add_argument('--K', type=int, default=5,
-                        help="Local Outlier Factor:  K is the number of neighboring points considered")
+    [path.mkdir(exist_ok=True, parents=True) for path in [WRITE_PATH]]
 
-    parser.add_argument('--dmin', type=int, default=0.10,
-                        help="Simple distance based:  dmin is ... ")
+    for file in os.listdir(READ_PATH):
+        preprocess_file(READ_PATH / file, WRITE_PATH / file, outlier_method, imputation_method, filter_cutoff)
 
-    parser.add_argument('--fmin', type=int, default=0.99,
-                        help="Simple distance based:  fmin is ... ")
+    combined_dataset = merge_datasets(WRITE_PATH, dummy=True)
+    DataViz = VisualizeDataset(__file__)
+    print(outlier_method.__name__)
+    title = outlier_method.__name__ + '_' + imputation_method.__name__
+    print(title)
+    DataViz.plot_dataset_boxplot(combined_dataset, ['acc_x', 'acc_y', 'acc_z'] + ['gyro_x', 'gyro_y', 'gyro_z'] +
+                                 ['magnet_x', 'magnet_y', 'magnet_z'], name=f'preprocessed_{title}')
 
-    FLAGS, unparsed = parser.parse_known_args()
-
-    main()
+    # Plot all data
+    util.print_statistics(combined_dataset)
+    DataViz.plot_dataset(combined_dataset, ['acc_', 'gyro_', 'magnet_', 'label'],
+                                           ['like', 'like', 'like', 'like'],
+                                           ['line', 'line', 'line', 'points'], name=f'preprocessed_{title}')

@@ -260,7 +260,7 @@ class VisualizeDataset:
         for i in range(0, len(clusters)):
             # Aggregate the silhouette scores for samples belonging to
             # cluster i, and sort them
-            rows = data_table.mask(data_table[cluster_col] == clusters[i])
+            rows = data_table.mask(data_table[cluster_col] != clusters[i])
             ith_cluster_silhouette_values = np.array(rows[silhouette_col])
             ith_cluster_silhouette_values.sort()
 
@@ -299,7 +299,7 @@ class VisualizeDataset:
         plt.ylabel('distance')
         times = dataset.index.strftime('%H:%M:%S')
         #dendrogram(linkage,truncate_mode='lastp',p=10, show_leaf_counts=True, leaf_rotation=90.,leaf_font_size=12.,show_contracted=True, labels=times)
-        dendrogram(linkage,truncate_mode='lastp',p=16, show_leaf_counts=True, leaf_rotation=45.,leaf_font_size=8.,show_contracted=True, labels=times)
+        dendrogram(linkage, truncate_mode="lastp", p = 16, show_leaf_counts = True, leaf_rotation = 45., leaf_font_size = 8., show_contracted = True, labels = list(times))
         self.save(plt)
         plt.show()
 

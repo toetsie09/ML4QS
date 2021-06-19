@@ -27,8 +27,8 @@ import argparse
 def main():
 
     # As usual, we set our program constants, read the input file and initialize a visualization object.
-    DATA_PATH = Path('./intermediate_datafiles/crowdsignal/')
-    DATASET_FNAME = 'chapter4_result.csv'
+    DATA_PATH = Path('./Assignment3/intermediate_datafiles/finaldatasets/')
+    DATASET_FNAME = 'dataset_1'
     RESULT_FNAME = 'chapter5_result.csv'
 
     try:
@@ -113,7 +113,7 @@ def main():
             print(f'k = {k}')
             dataset, l = clusteringH.agglomerative_over_instances(dataset, [
                                                                           'acc_phone_x', 'acc_phone_y', 'acc_phone_z'], k, 'euclidean', use_prev_linkage=True, link_function='ward')
-            silhouette_score = dataset_cluster['silhouette'].mean()
+            silhouette_score = dataset['silhouette'].mean()
             print(f'silhouette = {silhouette_score}')
             silhouette_values.append(silhouette_score)
             if k == k_values[0]:
@@ -127,14 +127,22 @@ def main():
         # And we select the outcome dataset of the knn clustering....
         clusteringNH = NonHierarchicalClustering()
 
-        dataset = clusteringNH.k_means_over_instances(dataset, ['acc_phone_x', 'acc_phone_y', 'acc_phone_z'], FLAGS.k, 'default', 50, 50)
-        DataViz.plot_clusters_3d(dataset, ['acc_phone_x', 'acc_phone_y', 'acc_phone_z'], 'cluster', ['label'])
+        # dataset = clusteringNH.k_means_over_instances(dataset, ['acc_x', 'acc_y', 'acc_z'], FLAGS.k, 'default', 50, 50)
+        # dataset = clusteringNH.k_means_over_instances(dataset, ['gyro_x', 'gyro_y', 'gyro_z'], FLAGS.k, 'default', 50, 50)
+        # dataset = clusteringNH.k_means_over_instances(dataset, ['magnet_x', 'magnet_y', 'magnet_z'], FLAGS.k, 'default', 50, 50)
+        dataset = clusteringNH.k_means_over_instances(dataset, ['acc_x', 'acc_y', 'acc_z', 'gyro_x', 'gyro_y', 'gyro_z',
+                                                                'magnet_x', 'magnet_y', 'magnet_z'],
+                                                      FLAGS.k, 'default', 50, 50)
+        # DataViz.plot_clusters_3d(dataset, ['acc_x', 'acc_y', 'acc_z'], 'cluster', ['label'])
+        # DataViz.plot_clusters_3d(dataset, ['gyro_x', 'gyro_y', 'gyro_z'], 'cluster', ['label'])
+        DataViz.plot_clusters_3d(dataset, ['magnet_x', 'magnet_y', 'magnet_z'], 'cluster', ['label'])
         DataViz.plot_silhouette(dataset, 'cluster', 'silhouette')
         util.print_latex_statistics_clusters(
-            dataset, 'cluster', ['acc_phone_x', 'acc_phone_y', 'acc_phone_z'], 'label')
+            dataset, 'cluster', ['acc_x', 'acc_y', 'acc_z', 'gyro_x', 'gyro_y', 'gyro_z', 'magnet_x',
+       'magnet_y', 'magnet_z'], 'label')
         del dataset['silhouette']
 
-        dataset.to_csv(DATA_PATH / RESULT_FNAME)
+        # dataset.to_csv(DATA_PATH / RESULT_FNAME)
 
 
 if __name__ == '__main__':

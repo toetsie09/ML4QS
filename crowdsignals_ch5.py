@@ -28,7 +28,7 @@ def main():
 
     # As usual, we set our program constants, read the input file and initialize a visualization object.
     DATA_PATH = Path('./Assignment3/intermediate_datafiles/finaldatasets/')
-    DATASET_FNAME = 'dataset_1'
+    DATASET_FNAME = 'dataset_final_everthing_nofreq.csv'
     RESULT_FNAME = 'chapter5_result.csv'
 
     try:
@@ -133,9 +133,9 @@ def main():
         dataset = clusteringNH.k_means_over_instances(dataset, ['acc_x', 'acc_y', 'acc_z', 'gyro_x', 'gyro_y', 'gyro_z',
                                                                 'magnet_x', 'magnet_y', 'magnet_z'],
                                                       FLAGS.k, 'default', 50, 50)
-        # DataViz.plot_clusters_3d(dataset, ['acc_x', 'acc_y', 'acc_z'], 'cluster', ['label'])
+        DataViz.plot_clusters_3d(dataset, ['acc_x', 'acc_y', 'acc_z'], 'cluster', ['label'])
         # DataViz.plot_clusters_3d(dataset, ['gyro_x', 'gyro_y', 'gyro_z'], 'cluster', ['label'])
-        DataViz.plot_clusters_3d(dataset, ['magnet_x', 'magnet_y', 'magnet_z'], 'cluster', ['label'])
+        # DataViz.plot_clusters_3d(dataset, ['magnet_x', 'magnet_y', 'magnet_z'], 'cluster', ['label'])
         DataViz.plot_silhouette(dataset, 'cluster', 'silhouette')
         util.print_latex_statistics_clusters(
             dataset, 'cluster', ['acc_x', 'acc_y', 'acc_z', 'gyro_x', 'gyro_y', 'gyro_z', 'magnet_x',
